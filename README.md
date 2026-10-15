@@ -1,39 +1,25 @@
-<<<<<<< HEAD
-# Win11 Net Speed Compact v3.1
+# Win11 Net Speed Compact v1.0.0
 
-A clean compact Windows network-speed widget developed by [Iqbal Mahmud](https://iqbalmahmud.com).
+A lightweight and customizable Windows network speed widget.
 
-## First launch
+## Features
 
-1. Extract the ZIP to a permanent folder.
-2. Double-click `run_widget.bat`.
-3. Start with Windows is enabled automatically on the first successful launch. It is a checked option in the right-click menu and can be disabled at any time.
+- Real-time upload and download monitoring
+- Compact floating widget
+- Always-on-top mode
+- Auto-start with Windows
+- Single-instance protection
+- Position persistence
+- Network adapter selection
+- Font color customization
+- Font weight customization
+- Font size customization
+- Background customization
 
-The startup entry is created only for the current Windows user and does not require administrator access. If the source folder or compiled EXE is moved, launching it once refreshes the saved startup path.
+## Downloads
 
-## Controls
+- Win11NetSpeedCompact.exe
+- Win11NetSpeedCompact.exe.sha256.txt
 
-- Left-drag anywhere to move it.
-- Right-click for units, adapter, font color/weight/size, background, startup and Exit.
-- Ctrl + mouse wheel changes compact width and height.
-- Reset position to taskbar returns it near the notification area.
-
-## Privacy and safety
-
-- Reads local cumulative adapter counters using `psutil`.
-- Stores UI settings in `%APPDATA%\Win11NetSpeedCompact\settings.json`.
-- Writes one current-user startup value under `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`.
-- Makes no HTTP/API requests, sends no telemetry, collects no browsing history, and requests no administrator privileges.
-- Opens the developer website only when the user selects that menu item.
-- A named mutex prevents duplicate v3 instances.
-
-## Avoid duplicate older builds
-
-Exit older widget versions before starting v3.1. On launch, v3.1 removes the legacy `Win11NetSpeedWidgetPro` startup value created by earlier builds of this project. It does not modify unrelated startup entries.
-
-## Build a standalone EXE
-
-Run `scripts\build_exe.bat` on Windows. The output is `dist\Win11NetSpeedCompact.exe`. Share the EXE together with this README and LICENSE. Unsigned personal EXEs may trigger a Windows reputation warning; recipients should verify the SHA-256 checksum you publish with each release.
-=======
-# win-net-speed-meter
->>>>>>> 5eda65d1af2fdb9a06dabfbe51b0a466f86b209f
+Developer: Iqbal Mahmud
+Website: https://iqbalmahmud.com
