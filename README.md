@@ -35,7 +35,7 @@ Developed by [Iqbal Mahmud](https://iqbalmahmud.com) · Current version: **3.1.0
 
 ### Option A: Download the EXE (recommended)
 
-1. Download `Win11NetSpeedCompact.exe` and `Win11NetSpeedCompact.exe.sha256.txt` from the [latest release](https://github.com/iqbalmbadhan/win-net-speed-meter/releases/latest).
+1. Download `Win11NetSpeedCompact.exe` and `Win11NetSpeedCompact.exe.sha256.txt` from the [latest release](https://github.com/iqbalmbadhan/Win11NetSpeedCompact/releases/latest).
 2. [Verify the checksum](#verifying-downloads).
 3. Move the EXE to a permanent folder, for example `%LOCALAPPDATA%\Programs\Win11NetSpeedCompact\`, and double-click it.
 
