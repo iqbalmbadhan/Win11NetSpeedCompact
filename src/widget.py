@@ -1,7 +1,7 @@
 """Win11 Net Speed Compact v1.0.0
 Developed by Iqbal Mahmud: https://iqbalmahmud.com
 """
-import ctypes, json, os, sys, threading, time, webbrowser
+import ctypes, json, math, os, re, sys, threading, time, webbrowser
 from pathlib import Path
 import tkinter as tk
 from tkinter import colorchooser
@@ -21,20 +21,67 @@ DEFAULT={
  'background':'#172033','border':'#334155','autostart':True,'first_run_complete':False,
  'topmost_refresh_ms':1500
 }
+UNITS=('auto_bytes','auto_bits','MBps','Mbps','KBps','Kbps')
+WEIGHTS=('normal','semibold','bold')
+HEX_COLOR=re.compile(r'#[0-9A-Fa-f]{6}')
+MAX_CFG_BYTES=64*1024
+ERROR_ALREADY_EXISTS=183
 _MUTEX=None
+
+if os.name=='nt':
+    from ctypes import wintypes
+    # Explicit prototypes: without them ctypes truncates 64-bit handles and
+    # GetLastError() can be clobbered by the interpreter between calls.
+    _K32=ctypes.WinDLL('kernel32',use_last_error=True)
+    _K32.CreateMutexW.restype=wintypes.HANDLE;_K32.CreateMutexW.argtypes=(wintypes.LPVOID,wintypes.BOOL,wintypes.LPCWSTR)
+    _U32=ctypes.WinDLL('user32',use_last_error=True)
+    _U32.FindWindowW.restype=wintypes.HWND;_U32.FindWindowW.argtypes=(wintypes.LPCWSTR,wintypes.LPCWSTR)
+    _U32.GetWindowRect.restype=wintypes.BOOL;_U32.GetWindowRect.argtypes=(wintypes.HWND,ctypes.POINTER(wintypes.RECT))
+    _U32.SetWindowPos.restype=wintypes.BOOL;_U32.SetWindowPos.argtypes=(wintypes.HWND,wintypes.HWND,ctypes.c_int,ctypes.c_int,ctypes.c_int,ctypes.c_int,wintypes.UINT)
 
 def single_instance():
     global _MUTEX
     if os.name!='nt': return True
-    k=ctypes.windll.kernel32
-    _MUTEX=k.CreateMutexW(None,False,'Local\\IqbalMahmud.Win11NetSpeedCompact.v3')
-    return bool(_MUTEX) and k.GetLastError()!=183
+    _MUTEX=_K32.CreateMutexW(None,False,'Local\\IqbalMahmud.Win11NetSpeedCompact.v3')
+    return bool(_MUTEX) and ctypes.get_last_error()!=ERROR_ALREADY_EXISTS
+
+def _clamp_int(v,default,lo,hi):
+    if isinstance(v,bool) or not isinstance(v,(int,float)) or not math.isfinite(v):return default
+    return min(hi,max(lo,int(v)))
+def sanitize_cfg(raw):
+    """Treat settings.json as untrusted: keep only known keys with valid types and ranges."""
+    c=DEFAULT.copy()
+    if not isinstance(raw,dict):return c
+    for k in ('x','y'):c[k]=_clamp_int(raw.get(k),None,-32768,32767)
+    c['width']=_clamp_int(raw.get('width'),DEFAULT['width'],150,2000)
+    c['height']=_clamp_int(raw.get('height'),DEFAULT['height'],30,400)
+    c['interval_ms']=_clamp_int(raw.get('interval_ms'),DEFAULT['interval_ms'],200,10000)
+    c['topmost_refresh_ms']=_clamp_int(raw.get('topmost_refresh_ms'),DEFAULT['topmost_refresh_ms'],500,60000)
+    c['font_size']=_clamp_int(raw.get('font_size'),DEFAULT['font_size'],6,32)
+    op=raw.get('opacity')
+    # Opacity is floored at 0.2 so a bad value can never make the widget invisible.
+    if not isinstance(op,bool) and isinstance(op,(int,float)) and math.isfinite(op):c['opacity']=min(1.0,max(0.2,float(op)))
+    if raw.get('unit') in UNITS:c['unit']=raw['unit']
+    if raw.get('font_weight') in WEIGHTS:c['font_weight']=raw['font_weight']
+    for k in ('font_color','background','border'):
+        if isinstance(raw.get(k),str) and HEX_COLOR.fullmatch(raw[k]):c[k]=raw[k]
+    if isinstance(raw.get('interface'),str) and 0<len(raw['interface'])<=256:c['interface']=raw['interface']
+    for k in ('autostart','first_run_complete'):
+        if isinstance(raw.get(k),bool):c[k]=raw[k]
+    return c
 
 def load_cfg():
-    try:return {**DEFAULT,**json.loads(CFG_FILE.read_text(encoding='utf-8'))}
-    except Exception:return DEFAULT.copy()
+    try:
+        if CFG_FILE.stat().st_size>MAX_CFG_BYTES:return DEFAULT.copy()
+        return sanitize_cfg(json.loads(CFG_FILE.read_text(encoding='utf-8')))
+    except (OSError,ValueError,RecursionError):return DEFAULT.copy()
 def save_cfg(c):
-    CFG_DIR.mkdir(parents=True,exist_ok=True);CFG_FILE.write_text(json.dumps(c,indent=2),encoding='utf-8')
+    """Write atomically so a crash or power loss never leaves a truncated settings file."""
+    try:
+        CFG_DIR.mkdir(parents=True,exist_ok=True);tmp=CFG_FILE.with_name(CFG_FILE.name+'.tmp')
+        tmp.write_text(json.dumps(c,indent=2),encoding='utf-8');os.replace(tmp,CFG_FILE)
+        return True
+    except OSError:return False
 def counter(interface):
     if interface=='All':return psutil.net_io_counters()
     return psutil.net_io_counters(pernic=True).get(interface,psutil.net_io_counters())
@@ -89,10 +136,9 @@ def remove_legacy_startup():
 
 def taskbar_default(width,height):
     if os.name=='nt':
-        class RECT(ctypes.Structure):_fields_=[('left',ctypes.c_long),('top',ctypes.c_long),('right',ctypes.c_long),('bottom',ctypes.c_long)]
         try:
-            hwnd=ctypes.windll.user32.FindWindowW('Shell_TrayWnd',None);r=RECT()
-            if hwnd and ctypes.windll.user32.GetWindowRect(hwnd,ctypes.byref(r)):
+            hwnd=_U32.FindWindowW('Shell_TrayWnd',None);r=wintypes.RECT()
+            if hwnd and _U32.GetWindowRect(hwnd,ctypes.byref(r)):
                 return max(r.left,r.right-width-90),r.top+max(0,(r.bottom-r.top-height)//2)
         except Exception:pass
     return 100,100
@@ -160,7 +206,7 @@ class CompactWidget:
     def end_move(self,e):
         self.drag=None;self.cfg['x']=self.root.winfo_x();self.cfg['y']=self.root.winfo_y();save_cfg(self.cfg)
     def resize_wheel(self,e):
-        d=10 if e.delta>0 else -10;self.cfg['width']=max(150,self.root.winfo_width()+d);self.cfg['height']=max(30,self.root.winfo_height()+(2 if e.delta>0 else -2));self.root.geometry(f"{self.cfg['width']}x{self.cfg['height']}");save_cfg(self.cfg)
+        d=10 if e.delta>0 else -10;self.cfg['width']=min(2000,max(150,self.root.winfo_width()+d));self.cfg['height']=min(400,max(30,self.root.winfo_height()+(2 if e.delta>0 else -2)));self.root.geometry(f"{self.cfg['width']}x{self.cfg['height']}");save_cfg(self.cfg)
     def set_unit(self):self.cfg['unit']=self.unit_var.get();save_cfg(self.cfg)
     def set_interface(self):self.cfg['interface']=self.if_var.get();self.last=counter(self.cfg['interface']);self.last_t=time.perf_counter();save_cfg(self.cfg)
     def set_color(self,c):self.cfg['font_color']=c;self.apply_style();save_cfg(self.cfg)
@@ -187,8 +233,8 @@ class CompactWidget:
         self.root.deiconify();self.root.attributes('-topmost',True);self.root.lift()
         if os.name=='nt':
             try:
-                HWND_TOPMOST=-1;flags=0x0001|0x0002|0x0010|0x0040
-                ctypes.windll.user32.SetWindowPos(self.root.winfo_id(),HWND_TOPMOST,0,0,0,0,flags)
+                HWND_TOPMOST=wintypes.HWND(-1);flags=0x0001|0x0002|0x0010|0x0040
+                _U32.SetWindowPos(self.root.winfo_id(),HWND_TOPMOST,0,0,0,0,flags)
             except Exception:pass
     def guard(self):
         if self.closed:return

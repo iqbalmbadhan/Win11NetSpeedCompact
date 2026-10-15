@@ -1,0 +1,25 @@
+version: 2
+updates:
+  - package-ecosystem: pip
+    directory: /
+    schedule:
+      interval: weekly
+    # Wait before adopting new releases, so compromised versions are usually
+    # caught and yanked before they reach this project.
+    cooldown:
+      default-days: 7
+    groups:
+      python-dependencies:
+        patterns: ["*"]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    # Wait before adopting new releases, so compromised versions are usually
+    # caught and yanked before they reach this project.
+    cooldown:
+      default-days: 7
+    groups:
+      github-actions:
+        patterns: ["*"]

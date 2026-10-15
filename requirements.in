@@ -1,0 +1,6 @@
+# Runtime dependencies. Edit this file, then regenerate the locked
+# requirements.txt with:
+#   pip-compile --generate-hashes --strip-extras requirements.in
+psutil>=7.0,<9
+Pillow>=10,<13
+pystray>=0.19.5,<1
