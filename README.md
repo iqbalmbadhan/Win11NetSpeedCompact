@@ -127,6 +127,15 @@ Get-Content .\Win11NetSpeedCompact.exe.sha256.txt
 
 The two hashes must match exactly. If they do not, do not run the file.
 
+There are two separate builds of v1.0.0, so each has its own checksum:
+
+| Download location | SHA-256 |
+| --- | --- |
+| [v1.0.0 release](https://github.com/iqbalmbadhan/Win11NetSpeedCompact/releases/tag/v1.0.0) | `f9f48b44299ca6410203e5e8cc01c7326be98356ef57386559b9c0863b273673` |
+| [`dist`](dist) folder | `17054436d64533e63f19dfa04b98395a41e453726bd488946cae4c05c60b7f36` |
+
+Both are built from the same source code. Your hash only needs to match the one for the place you downloaded from.
+
 ## Upgrading from older versions
 
 If you used an earlier build of this widget (such as "Net Speed Widget Pro"), exit it before starting this version, so that two widgets don't run at the same time. The old startup entry is cleaned up automatically.
