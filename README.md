@@ -134,7 +134,7 @@ There are two separate builds of v1.0.0, so each has its own checksum:
 | [v1.0.0 release](https://github.com/iqbalmbadhan/Win11NetSpeedCompact/releases/tag/v1.0.0) | `f9f48b44299ca6410203e5e8cc01c7326be98356ef57386559b9c0863b273673` |
 | [`dist`](dist) folder | `17054436d64533e63f19dfa04b98395a41e453726bd488946cae4c05c60b7f36` |
 
-Both are built from the same source code. Your hash only needs to match the one for the place you downloaded from.
+The release build is produced by the GitHub Actions workflow; the `dist` copy was built and uploaded separately. Your hash only needs to match the one for the place you downloaded from.
 
 ## Upgrading from older versions
 
