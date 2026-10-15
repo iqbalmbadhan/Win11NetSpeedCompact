@@ -2,7 +2,7 @@
 
 A small, always-on-top network speed meter for Windows 11. It sits on or near the taskbar and shows live download (↓) and upload (↑) speed, with no telemetry, no admin rights and no network requests.
 
-Developed by [Iqbal Mahmud](https://iqbalmahmud.com) · Current version: **3.1.0** · [Changelog](CHANGELOG.md)
+Developed by [Iqbal Mahmud](https://iqbalmahmud.com) · Current version: **1.0.0** · [Changelog](CHANGELOG.md)
 
 <p align="center">
   <img src="screenshots/widget-taskbar.png" alt="Widget docked on the Windows 11 taskbar showing download and upload speed" />
@@ -35,7 +35,7 @@ Developed by [Iqbal Mahmud](https://iqbalmahmud.com) · Current version: **3.1.0
 
 ### Option A: Download the EXE (recommended)
 
-1. Download `Win11NetSpeedCompact.exe` and `Win11NetSpeedCompact.exe.sha256.txt` from the [latest release](https://github.com/iqbalmbadhan/Win11NetSpeedCompact/releases/latest).
+1. Download `Win11NetSpeedCompact.exe` and `Win11NetSpeedCompact.exe.sha256.txt` from the [`dist`](https://github.com/iqbalmbadhan/Win11NetSpeedCompact/tree/main/dist) folder of this repository.
 2. [Verify the checksum](#verifying-downloads).
 3. Move the EXE to a permanent folder, for example `%LOCALAPPDATA%\Programs\Win11NetSpeedCompact\`, and double-click it.
 
@@ -118,7 +118,7 @@ To report a vulnerability, see [SECURITY.md](SECURITY.md).
 
 ## Verifying downloads
 
-Every release includes a SHA-256 checksum file. In PowerShell, from the folder that contains the download:
+The [`dist`](dist) folder includes a SHA-256 checksum file next to the EXE. In PowerShell, from the folder that contains the download:
 
 ```powershell
 (Get-FileHash .\Win11NetSpeedCompact.exe -Algorithm SHA256).Hash.ToLower()
@@ -129,7 +129,7 @@ The two hashes must match exactly. If they do not, do not run the file.
 
 ## Upgrading from older versions
 
-Exit any older copy of the widget (v3.0 or the earlier "Net Speed Widget Pro") before starting v3.1, so that two widgets don't run at the same time. v3.1 cleans up the old startup entry automatically.
+If you used an earlier build of this widget (such as "Net Speed Widget Pro"), exit it before starting this version, so that two widgets don't run at the same time. The old startup entry is cleaned up automatically.
 
 ## Uninstall
 
@@ -153,18 +153,14 @@ Both build scripts install the requirements and PyInstaller, then build a single
 
 ### Automated releases
 
-[`.github/workflows/build.yml`](.github/workflows/build.yml) builds the EXE and its checksum on `windows-latest`. It runs when started manually or when a `v*` tag is pushed. For tag pushes it also publishes a GitHub Release:
-
-```powershell
-git tag v3.1.0
-git push origin v3.1.0
-```
+[`.github/workflows/build.yml`](.github/workflows/build.yml) builds the EXE and its checksum on `windows-latest`. To run it, open the repository's **Actions** tab, choose **Build and Release Windows EXE** and click **Run workflow**. The EXE and checksum can then be downloaded from the run's artifacts.
 
 Code-signing setup and the repository secrets it needs are described in [DISTRIBUTION.md](DISTRIBUTION.md).
 
 ## Project structure
 
 ```
+├── dist/                      # Prebuilt EXE + SHA-256 checksum
 ├── src/widget.py              # The whole application (Tkinter + psutil + pystray)
 ├── install_and_run.bat        # Install dependencies and launch from source
 ├── run_widget.bat             # Launch from source

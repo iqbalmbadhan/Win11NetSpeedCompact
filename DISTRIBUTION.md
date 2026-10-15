@@ -25,10 +25,3 @@ Add these repository secrets:
 - `WINDOWS_SIGNING_PFX_PASSWORD`: PFX password
 
 If the secrets are absent, GitHub builds an unsigned EXE. If present, the workflow signs and verifies it before publishing.
-
-## Release
-
-```powershell
-git tag v3.1.0
-git push origin v3.1.0
-```

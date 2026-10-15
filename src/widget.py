@@ -1,4 +1,4 @@
-"""Win11 Net Speed Compact v3.0
+"""Win11 Net Speed Compact v1.0.0
 Developed by Iqbal Mahmud: https://iqbalmahmud.com
 """
 import ctypes, json, os, sys, threading, time, webbrowser
@@ -10,7 +10,7 @@ from PIL import Image, ImageDraw
 import pystray
 
 APP='Win11NetSpeedCompact'
-APP_VERSION='3.1.0'
+APP_VERSION='1.0.0'
 WEBSITE='https://iqbalmahmud.com'
 CFG_DIR=Path(os.getenv('APPDATA',Path.home()))/APP
 CFG_FILE=CFG_DIR/'settings.json'

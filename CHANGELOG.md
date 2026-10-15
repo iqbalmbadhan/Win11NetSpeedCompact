@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.1.0
+## 1.0.0
 - Automatically enables current-user startup on first successful launch
 - Adds a checked Start with Windows menu item
 - Refreshes startup path after the app is moved and launched again
