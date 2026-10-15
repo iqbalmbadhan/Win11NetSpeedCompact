@@ -2,7 +2,7 @@
 
 A small, always-on-top network speed meter for Windows 11. It sits on or near the taskbar and shows live download (↓) and upload (↑) speed, with no telemetry, no admin rights and no network requests.
 
-Developed by [Iqbal Mahmud](https://iqbalmahmud.com) · Current version: **1.0.0** · [Changelog](CHANGELOG.md)
+Developed by [Iqbal Mahmud](https://iqbalmahmud.com) · Current version: **[1.0.0](https://github.com/iqbalmbadhan/Win11NetSpeedCompact/releases/tag/v1.0.0)** · [Changelog](CHANGELOG.md)
 
 <p align="center">
   <img src="screenshots/widget-taskbar.png" alt="Widget docked on the Windows 11 taskbar showing download and upload speed" />
@@ -35,7 +35,7 @@ Developed by [Iqbal Mahmud](https://iqbalmahmud.com) · Current version: **1.0.0
 
 ### Option A: Download the EXE (recommended)
 
-1. Download `Win11NetSpeedCompact.exe` and `Win11NetSpeedCompact.exe.sha256.txt` from the [`dist`](https://github.com/iqbalmbadhan/Win11NetSpeedCompact/tree/main/dist) folder of this repository.
+1. Download `Win11NetSpeedCompact.exe` and `Win11NetSpeedCompact.exe.sha256.txt` from the [v1.0.0 release](https://github.com/iqbalmbadhan/Win11NetSpeedCompact/releases/tag/v1.0.0). A copy is also kept in the [`dist`](dist) folder of this repository.
 2. [Verify the checksum](#verifying-downloads).
 3. Move the EXE to a permanent folder, for example `%LOCALAPPDATA%\Programs\Win11NetSpeedCompact\`, and double-click it.
 
@@ -118,7 +118,7 @@ To report a vulnerability, see [SECURITY.md](SECURITY.md).
 
 ## Verifying downloads
 
-The [`dist`](dist) folder includes a SHA-256 checksum file next to the EXE. In PowerShell, from the folder that contains the download:
+Each EXE comes with a SHA-256 checksum file. Use the checksum from the same place you downloaded the EXE, because the release and the `dist` folder hold separate builds. In PowerShell, from the folder that contains the download:
 
 ```powershell
 (Get-FileHash .\Win11NetSpeedCompact.exe -Algorithm SHA256).Hash.ToLower()
