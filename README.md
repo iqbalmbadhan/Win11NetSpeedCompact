@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Win11 Net Speed Compact v3.1
 
 A clean compact Windows network-speed widget developed by [Iqbal Mahmud](https://iqbalmahmud.com).
@@ -33,3 +34,6 @@ Exit older widget versions before starting v3.1. On launch, v3.1 removes the leg
 ## Build a standalone EXE
 
 Run `scripts\build_exe.bat` on Windows. The output is `dist\Win11NetSpeedCompact.exe`. Share the EXE together with this README and LICENSE. Unsigned personal EXEs may trigger a Windows reputation warning; recipients should verify the SHA-256 checksum you publish with each release.
+=======
+# win-net-speed-meter
+>>>>>>> 5eda65d1af2fdb9a06dabfbe51b0a466f86b209f
