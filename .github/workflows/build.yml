@@ -26,8 +26,8 @@ jobs:
         with:
           persist-credentials: false
 
-      # The action installs pip-audit with pip, which the runner's system
-      # Python refuses (PEP 668), so it needs its own interpreter.
+      # The action pip-installs itself into the active Python; give it a
+      # managed interpreter rather than the runner's system Python.
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "3.12"
@@ -36,6 +36,9 @@ jobs:
         with:
           inputs: requirements-build.txt
           require-hashes: true
+          # Audit the exact pins instead of re-resolving them on this Linux
+          # runner, where pystray would pull in Linux-only python-xlib.
+          internal-be-careful-extra-flags: --disable-pip
 
   build:
     name: Build EXE
