@@ -2,5 +2,5 @@
 # requirements.txt with:
 #   pip-compile --generate-hashes --strip-extras requirements.in
 psutil>=7.0,<9
-Pillow>=10,<13
+Pillow>=13.0.0,<14
 pystray>=0.19.5,<1
